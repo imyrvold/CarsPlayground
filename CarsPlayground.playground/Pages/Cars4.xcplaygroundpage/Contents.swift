@@ -1,6 +1,8 @@
 import UIKit
 import Combine
 
+var subscriptions: Set<AnyCancellable> = []
+
 struct Car {
     let name: String
     let imageString: String?
@@ -39,6 +41,7 @@ final class CarClass {
             .flatMap { image in
                 Just(image).setFailureType(to: Error.self)
             }
+            .delay(for: .seconds(delayImage), scheduler: RunLoop.main)
             .eraseToAnyPublisher()
     }
 }
@@ -52,6 +55,7 @@ carClass.getVehicles()
             print("The car is", car.name, string)
         }
     }
+    .store(in: &subscriptions)
 
 //carClass.getImage("car")
 //    .sink(receiveCompletion: { print($0)}) { image in
